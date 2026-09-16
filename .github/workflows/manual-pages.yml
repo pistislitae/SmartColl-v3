@@ -1,0 +1,39 @@
+name: Deploy SmartColl Clean to Cloudflare Pages
+on:
+  workflow_dispatch:
+    inputs:
+      source_repository:
+        description: Private source repository (owner/name)
+        required: true
+        default: pistislitae/SmartColl-v3-Priv
+      source_ref:
+        description: Branch, tag, or commit SHA
+        required: true
+        default: main
+      pages_project:
+        description: Existing Cloudflare Pages project name
+        required: true
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.source_repository }}
+          ref: ${{ inputs.source_ref }}
+          token: ${{ secrets.SOURCE_REPO_TOKEN }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Test and build WebApp/PWA
+        run: npm ci && npm test && npm run build
+      - name: Deploy static UI and Pages Functions
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler@4 pages deploy dist --project-name="${{ inputs.pages_project }}" --branch=main --commit-dirty=true
