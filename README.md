@@ -2,7 +2,7 @@
 
 Repository public: `pistislitae/SmartColl-v3`.
 
-Repository ini hanya berisi GitHub Actions manual. Source aplikasi SmartColl 4.3.3 tetap private di `pistislitae/SmartColl-v3-Priv`.
+Repository ini hanya berisi GitHub Actions manual. Source aplikasi SmartColl 4.3.4 tetap private di `pistislitae/SmartColl-v3-Priv`.
 
 ## Workflow
 
