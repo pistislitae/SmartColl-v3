@@ -1,21 +1,25 @@
 # SmartColl Clean — Public Build Orchestrator
 
-Repository public: `pistislitae/SmartColl-v3`. Repository ini hanya berisi GitHub Actions manual. Source SmartColl tetap di repository private `pistislitae/SmartColl-v3-Priv`.
+Repository public: `pistislitae/SmartColl-v3`.
 
-## Mengapa cocok tanpa VPS/laptop
+Repository ini hanya berisi GitHub Actions manual. Source aplikasi tetap private di `pistislitae/SmartColl-v3-Priv`.
 
-Semua dapat dilakukan dari browser HP:
+## Workflow
 
-1. Buat repository private dan upload isi `SmartColl_Clean_Private_Source.zip`.
-2. Buat repository public dan upload isi package ini.
-3. Tambahkan repository secrets melalui GitHub Settings.
-4. Buka tab **Actions** dan jalankan workflow secara manual.
-5. Unduh APK dari **Artifacts**, atau buka hasil deploy pada `https://<project>.pages.dev`.
+- **Build SmartColl Clean APK**: checkout private source, test, Vite build, Capacitor sync, dan Gradle build menggunakan Node 20 + Java 17.
+- **Deploy SmartColl Clean to Cloudflare Pages**: deploy UI `dist` dan Pages Functions/Workers JavaScript ke project `pages.dev` yang sudah dibuat.
 
-## Secrets repository public
+Semua dapat dijalankan dari browser HP melalui tab **Actions → Run workflow**.
 
-- `SOURCE_REPO_TOKEN`: fine-grained token read-only untuk satu repository private.
-- `CLOUDFLARE_API_TOKEN`: token Cloudflare dengan izin Pages deploy pada project terkait.
+## Secret wajib
+
+Buka **Settings → Secrets and variables → Actions**:
+
+- `SOURCE_REPO_TOKEN`: fine-grained PAT baru, hanya untuk `SmartColl-v3-Priv`, permission **Contents: Read-only**. Jangan gunakan token full-scope atau token yang pernah dibagikan lewat chat.
+
+Untuk workflow deploy Pages manual:
+
+- `CLOUDFLARE_API_TOKEN`: token Cloudflare Pages deploy dengan least privilege.
 - `CLOUDFLARE_ACCOUNT_ID`: ID akun Cloudflare.
 
 Untuk APK release bertanda tangan:
@@ -25,11 +29,13 @@ Untuk APK release bertanda tangan:
 - `ANDROID_KEY_ALIAS`
 - `ANDROID_KEY_PASSWORD`
 
-Mulai dengan build `debug` jika belum memiliki keystore. APK debug dapat dipasang untuk pengujian tetapi bukan untuk Play Store.
+Mulai dengan build `debug` jika belum mempunyai keystore. APK debug bisa dipasang untuk uji operasional, tetapi bukan untuk distribusi Play Store.
 
 ## Keamanan
 
 - Jangan simpan Aging, data debitur, token, keystore, atau database di repository public.
-- Artifacts repository public dapat diunduh orang lain. APK tidak boleh berisi data operasional.
-- Workflow tidak mencetak secret.
-- Token source menggunakan `persist-credentials: false`.
+- Artifact repository public dapat diunduh orang lain; APK tidak boleh berisi data operasional ataupun token runtime.
+- Workflow menggunakan `persist-credentials: false` dan tidak mencetak secret.
+- Secret Apps Script dan token runtime SmartColl disimpan di Cloudflare, bukan repository public.
+
+Panduan lengkap ada pada private source: `docs/PHONE_ONLY_DEPLOYMENT.md`.
