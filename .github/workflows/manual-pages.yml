@@ -9,7 +9,7 @@ on:
       source_ref:
         description: Branch, tag, or commit SHA
         required: true
-        default: v4.3.5
+        default: main
       pages_project:
         description: Cloudflare Pages project name (created if absent)
         required: true
