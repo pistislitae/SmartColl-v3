@@ -50,6 +50,7 @@ jobs:
           npm test
           npm run build
           npx cap sync android
+          chmod +x android/gradlew
       - name: Build debug APK
         if: inputs.build_type == 'debug'
         run: cd android && ./gradlew --no-daemon assembleDebug
