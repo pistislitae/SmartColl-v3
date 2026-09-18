@@ -25,7 +25,7 @@ jobs:
         with:
           repository: ${{ inputs.source_repository }}
           ref: ${{ inputs.source_ref }}
-          token: ${{ secrets.SOURCE_REPO_TOKEN }}
+          ssh-key: ${{ secrets.SOURCE_REPO_DEPLOY_KEY }}
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
